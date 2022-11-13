@@ -1,9 +1,8 @@
 package com.mitrakov.self.serverpush
 
 import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.messaging.{FirebaseMessaging, Message, Notification}
+import com.google.firebase.messaging._
 import com.google.firebase.{FirebaseApp, FirebaseOptions}
-
 import java.io.FileInputStream
 
 object Main extends App {
@@ -14,13 +13,13 @@ object Main extends App {
     .setProjectId("tommypush-405b7")
     .build()
   val app = FirebaseApp.initializeApp(options)
-  val not = Notification.builder().setTitle("Title bro").setBody("Body, man").build()
+
   val msg = Message
     .builder()
-    .setNotification(not)
-    //.setToken("C93BCD6D8E92C0227B2237B58D7D3E2575F1F5DD533DBB83A9E91E6AB10E5E82")
-    .setToken("ff1BAIO5MkTxgl1Y4Ho2_V:APA91bGx-B1_g93mxxXT5mrzzOYPnVR9_Pgp4eVXwzJxqJaHXtW74Fb1C7GyeOATt-443KTiJ0QGaqI1Si_H2zMwzelAdwd_4vIE92Me7jVArQ04GE3IqhUnctEocWAtJuiXqd0h4kTF")
+    .setNotification(Notification.builder().setTitle("Tommy Push Notification").setBody("Hello, man!").build())
+    .setApnsConfig(ApnsConfig.builder().setAps(Aps.builder().setSound("default").build()).build())
+    .setToken("cVXnVdTcM00lnKcKq4zrBn:APA91bFBMJQ87ryzNipCIVwlXOpwNl-3RWjOTw1Ei3yAFL6q3wr7bkVzRmXMeFYhtFYhEKlfogztMKTTRK4sVBLkLpCGh0NOCicbwqUjF2hJ-shta-lspkZBuTU5MWS6R2-cdBbmYvM1")
     .build()
-  val msgID = FirebaseMessaging.getInstance(app).send(msg)
-  println(msgID)
+  val msgId = FirebaseMessaging.getInstance(app).send(msg)
+  println(msgId)
 }
