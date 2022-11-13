@@ -1,3 +1,17 @@
+# Scala
+*.iml
+.idea
+.scannerwork
+.DS_Store
+.bsp
+.bloop
+.metals
+.bsp.metals
+.sbt-hydra-history
+target
+project/.bloop
+project/metals.sbt
+
 # Miscellaneous
 *.class
 *.log
