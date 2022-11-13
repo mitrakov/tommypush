@@ -1,67 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  Future<String?> initMessaging() async {
+    await Firebase.initializeApp();
+    final messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: true,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    final token = await messaging.getAPNSToken();
+    print("User granted permission: ${settings.authorizationStatus}; Token is: $token");
+    return token;
+  }
+
+  WidgetsFlutterBinding.ensureInitialized(); // make this call if you have initialization code before "runApp()"
+  final token = await initMessaging();
+  runApp(MyApp(token ?? ""));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final String token;
+  MyApp(this.token);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+        title: 'Push Notifications application',
+        debugShowCheckedModeBanner: false,
+        home: Scaffold (
+            appBar: AppBar(title: Text("Push Notifications application")),
+            body: Center(child: Text("Your token is $token"))
+        )
     );
   }
 }
