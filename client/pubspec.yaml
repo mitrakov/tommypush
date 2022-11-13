@@ -1,3 +1,4 @@
+# build with Flutter 2.10.5
 name: tommypush
 description: Simple Push Notifications receiver
 
@@ -9,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fluttertoast: ^8.0.9
-  firebase_core: ^2.2.0
-  firebase_messaging: ^14.1.0
+  fluttertoast: ^8.0.9         # toast messages
+  firebase_core: ^2.2.0        # push notifications
+  firebase_messaging: ^14.1.0  # push notifications
 
 dev_dependencies:
   flutter_test:
