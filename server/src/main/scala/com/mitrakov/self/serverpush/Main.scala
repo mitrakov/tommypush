@@ -9,6 +9,7 @@ import io.burt.jmespath.jackson.JacksonRuntime
 import sttp.client3.{HttpClientSyncBackend, SttpApi}
 import java.io.FileInputStream
 import java.time.{Duration, LocalDateTime}
+import scala.util.Try
 
 object Main extends App with LazyLogging with SttpApi {
   type MsgId = String
@@ -30,12 +31,11 @@ object Main extends App with LazyLogging with SttpApi {
 
   while (true) {
     val minutes = Duration.between(lastSentMsgTime, LocalDateTime.now).toMinutes
-    if (minutes >= 120) {
+    if (minutes >= 120) Try {
       makeRequest() match {
         case Right(json) =>
           val realRate = parseDouble(json, jmesPath = "marketdata.data[0][8]")
           if (realRate >= desiredRate) {
-
             sendMessage(firebase, "Tommy Push Notification", s"$realRate ≥ $desiredRate!")
             lastSentMsgTime = LocalDateTime.now()
           }
