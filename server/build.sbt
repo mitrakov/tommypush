@@ -22,4 +22,4 @@ assembly / assemblyMergeStrategy := {
 }
 assembly / assemblyJarName := "tommypush.jar"
 assembly / test := {}
-assembly / logLevel := util.Level.Debug
+assembly / logLevel := util.Level.Info
