@@ -1,17 +1,15 @@
 package com.mitrakov.self.serverpush
 
-import com.typesafe.scalalogging.LazyLogging
-import sttp.client3.SttpApi
-import java.time.LocalDate
-
-object Main extends App with LazyLogging with SttpApi {
-  if (args.length != 2) {
-    Console.err.println("Usage:   java -jar tommypush.jar <path/to/firebase.json> <usd-rub-rate>\nExample: java -jar tommypush.jar /home/user1/firebase-adminsdk.json 76.2")
+// to build run: "sbt assembly"
+object Main extends App {
+  if (args.length != 3) {
+    Console.err.println("Usage:   java -jar tommypush.jar <path/to/firebase.json> <usd-rate> <aviasales-rate>\nExample: java -jar tommypush.jar /home/user1/firebase-adminsdk.json 76.2 10000")
     System.exit(1)
   }
 
   val firebaseConfPath = args.head
-  val desiredRate = args(1).toDouble
+  val desiredUsdRate = args(1).toDouble
+  val desiredAviasalesRate = args(2).toDouble
 
   // iPhone7
   val fcmToken1 = "cVXnVdTcM00lnKcKq4zrBn:APA91bFBMJQ87ryzNipCIVwlXOpwNl-3RWjOTw1Ei3yAFL6q3wr7bkVzRmXMeFYhtFYhEKlfogztMKTTRK4sVBLkLpCGh0NOCicbwqUjF2hJ-shta-lspkZBuTU5MWS6R2-cdBbmYvM1"
@@ -19,7 +17,19 @@ object Main extends App with LazyLogging with SttpApi {
   val fcmToken2 = "fKloxEYmR7CinffPjQgUn2:APA91bE0-dyq0RRj9k1SFol8kO6xX39QnhQh2sHzZNTxRpZ_0cLlxhymlwA9TEKuIKOOLjG2bjPHjEv7iOA7fgWtB1sn1JX8oCev6j3EMHpmKfUZXybECpCUtUmqTSzWrpP-Yz6Awn2j"
 
   val firebase = new FirebaseHelper(firebaseConfPath)
+  val usdToRubPath   = "https://iss.moex.com/iss/engines/currency/markets/selt/securities.jsonp?iss.meta=off&iss.only=marketdata&securities=CETS:USD000UTSTOM"
+  val aviasalesPath0 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2022-12-31&depart_range=0"
+  val aviasalesPath1 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2023-01-01&depart_range=0"
+  val aviasalesPath2 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2023-01-02&depart_range=0"
+  val aviasalesPath3 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2023-01-03&depart_range=0"
 
-  new Thread(new UsdChecker(desiredRate, firebase, fcmToken2)).start()
-  new Thread(new AviasalesChecker(LocalDate.of(2022, 12, 31), 20000, firebase, fcmToken2)).start()
+  val checkers = List(
+    new Checker("USD", usdToRubPath, "marketdata.data[0][8]", GreaterComparer, desiredUsdRate, firebase, fcmToken2),
+    new Checker("Aviasales 12-31", aviasalesPath0, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
+    new Checker("Aviasales 01-01", aviasalesPath1, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
+    new Checker("Aviasales 01-02", aviasalesPath2, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
+    new Checker("Aviasales 01-03", aviasalesPath3, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
+  )
+
+  checkers.foreach(_.start())
 }

@@ -3,13 +3,15 @@ package com.mitrakov.self.serverpush
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.typesafe.scalalogging.StrictLogging
 import io.burt.jmespath.jackson.JacksonRuntime
-import sttp.client3.{HttpClientSyncBackend, SttpApi}
+import sttp.client3.{HttpClientSyncBackend, Identity, SttpApi, SttpBackend}
 import java.time.{Duration, LocalDateTime}
 import scala.util.Try
 
-class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken: String) extends Runnable with SttpApi with StrictLogging {
+class Checker(name: String, request: String, jmesPath: String, comparer: Comparer, desiredRate: Double, firebase: FirebaseHelper, recipientFcmToken: String)
+  extends Thread with SttpApi with StrictLogging {
+
   val COOLDOWN_MINUTES = 180     // don't send duplicate messages during this time
-  val sttp = HttpClientSyncBackend()
+  val sttp: SttpBackend[Identity, Any] = HttpClientSyncBackend()
   val jqRuntime = new JacksonRuntime()
   val mapper = new ObjectMapper()
   var lastSentMsgTime: LocalDateTime = LocalDateTime.MIN
@@ -20,9 +22,9 @@ class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken:
       if (minutes >= COOLDOWN_MINUTES) Try {
         makeRequest() match {
           case Right(json) =>
-            val realRate = parseDouble(json, jmesPath = "marketdata.data[0][8]")
-            if (realRate >= desiredRate) {
-              helper.sendMessage(recipientFcmToken, "Tommy: USD Checker", s"$realRate ≥ $desiredRate!")
+            val realRate = parseDouble(json, jmesPath)
+            if (comparer.compare(realRate, desiredRate)) {
+              firebase.sendMessage(recipientFcmToken, s"Tommy $name Checker", s"$realRate $comparer $desiredRate!")
               lastSentMsgTime = LocalDateTime.now()
             }
           case Left(error) => logger.error(error)
@@ -33,9 +35,7 @@ class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken:
   }
 
   def makeRequest(): Either[String, String] = {
-    val response = basicRequest
-      .get(uri"https://iss.moex.com/iss/engines/currency/markets/selt/securities.jsonp?iss.meta=off&iss.only=marketdata&securities=CETS:USD000UTSTOM")
-      .send(sttp)
+    val response = basicRequest.get(uri"$request").send(sttp)
     val result = response.body
     logger.debug(result.toString)
     result
@@ -45,7 +45,7 @@ class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken:
     val jq = jqRuntime.compile(jmesPath)
     val node = mapper.readTree(json)
     val result = jq.search(node)
-    logger.info(s"USD result is $result")
+    logger.info(s"$name result is $result")
     result.asDouble()
   }
 }
