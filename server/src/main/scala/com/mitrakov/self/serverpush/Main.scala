@@ -13,6 +13,7 @@ import scala.util.Try
 
 object Main extends App with LazyLogging with SttpApi {
   type MsgId = String
+  val COOLDOWN_MINUTES = 180     // don't send duplicate messages during this time
   if (args.length != 2) {
     Console.err.println("Usage:   java -jar tommypush.jar <path/to/firebase.json> <usd-rub-rate>\nExample: java -jar tommypush.jar /home/user1/firebase-adminsdk.json 76.2")
     System.exit(1)
@@ -21,7 +22,10 @@ object Main extends App with LazyLogging with SttpApi {
   val firebaseConfPath = args.head
   val desiredRate = args(1).toDouble
   val projectId = "tommypush-405b7"
-  val fcmToken = "cVXnVdTcM00lnKcKq4zrBn:APA91bFBMJQ87ryzNipCIVwlXOpwNl-3RWjOTw1Ei3yAFL6q3wr7bkVzRmXMeFYhtFYhEKlfogztMKTTRK4sVBLkLpCGh0NOCicbwqUjF2hJ-shta-lspkZBuTU5MWS6R2-cdBbmYvM1"
+  // iPhone7
+  // val fcmToken = "cVXnVdTcM00lnKcKq4zrBn:APA91bFBMJQ87ryzNipCIVwlXOpwNl-3RWjOTw1Ei3yAFL6q3wr7bkVzRmXMeFYhtFYhEKlfogztMKTTRK4sVBLkLpCGh0NOCicbwqUjF2hJ-shta-lspkZBuTU5MWS6R2-cdBbmYvM1"
+  // Samsung Galaxy S7
+  val fcmToken = "fKloxEYmR7CinffPjQgUn2:APA91bE0-dyq0RRj9k1SFol8kO6xX39QnhQh2sHzZNTxRpZ_0cLlxhymlwA9TEKuIKOOLjG2bjPHjEv7iOA7fgWtB1sn1JX8oCev6j3EMHpmKfUZXybECpCUtUmqTSzWrpP-Yz6Awn2j"
   var lastSentMsgTime = LocalDateTime.parse("2000-01-01T00:00:00")
 
   lazy val sttp = HttpClientSyncBackend()
@@ -31,7 +35,7 @@ object Main extends App with LazyLogging with SttpApi {
 
   while (true) {
     val minutes = Duration.between(lastSentMsgTime, LocalDateTime.now).toMinutes
-    if (minutes >= 120) Try {
+    if (minutes >= COOLDOWN_MINUTES) Try {
       makeRequest() match {
         case Right(json) =>
           val realRate = parseDouble(json, jmesPath = "marketdata.data[0][8]")
