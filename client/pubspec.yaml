@@ -2,7 +2,7 @@
 name: tommypush
 description: Simple Push Notifications receiver
 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
@@ -20,5 +20,4 @@ dev_dependencies:
   flutter_lints: ^1.0.0
 
 flutter:
-
   uses-material-design: true
