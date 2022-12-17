@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.typesafe.scalalogging.StrictLogging
 import io.burt.jmespath.jackson.JacksonRuntime
 import sttp.client3.{HttpClientSyncBackend, SttpApi}
-import java.time.{Duration, LocalDateTime}
+
+import java.time.{Duration, LocalDate, LocalDateTime}
 import scala.util.Try
 
-class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken: String) extends Runnable with SttpApi with StrictLogging {
+class AviasalesChecker(date: LocalDate, desiredRate: Int, helper: FirebaseHelper, recipientFcmToken: String) extends Runnable with SttpApi with StrictLogging {
   val COOLDOWN_MINUTES = 180     // don't send duplicate messages during this time
   val sttp = HttpClientSyncBackend()
   val jqRuntime = new JacksonRuntime()
@@ -20,9 +21,9 @@ class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken:
       if (minutes >= COOLDOWN_MINUTES) Try {
         makeRequest() match {
           case Right(json) =>
-            val realRate = parseDouble(json, jmesPath = "marketdata.data[0][8]")
-            if (realRate >= desiredRate) {
-              helper.sendMessage(recipientFcmToken, "Tommy: USD Checker", s"$realRate ≥ $desiredRate!")
+            val realRate = parseDouble(json, jmesPath = "min(prices[].value)")
+            if (realRate <= desiredRate) {
+              helper.sendMessage(recipientFcmToken, "Tommy: Aviasales Checker", s"$realRate ≤ $desiredRate!")
               lastSentMsgTime = LocalDateTime.now()
             }
           case Left(error) => logger.error(error)
@@ -34,7 +35,7 @@ class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken:
 
   def makeRequest(): Either[String, String] = {
     val response = basicRequest
-      .get(uri"https://iss.moex.com/iss/engines/currency/markets/selt/securities.jsonp?iss.meta=off&iss.only=marketdata&securities=CETS:USD000UTSTOM")
+      .get(uri"https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=$date&depart_range=0")
       .send(sttp)
     val result = response.body
     logger.debug(result.toString)
@@ -45,7 +46,7 @@ class UsdChecker(desiredRate: Double, helper: FirebaseHelper, recipientFcmToken:
     val jq = jqRuntime.compile(jmesPath)
     val node = mapper.readTree(json)
     val result = jq.search(node)
-    logger.info(s"USD result is $result")
+    logger.info(s"Aviasales result is $result")
     result.asDouble()
   }
 }

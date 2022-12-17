@@ -2,6 +2,7 @@ package com.mitrakov.self.serverpush
 
 import com.typesafe.scalalogging.LazyLogging
 import sttp.client3.SttpApi
+import java.time.LocalDate
 
 object Main extends App with LazyLogging with SttpApi {
   if (args.length != 2) {
@@ -20,4 +21,5 @@ object Main extends App with LazyLogging with SttpApi {
   val firebase = new FirebaseHelper(firebaseConfPath)
 
   new Thread(new UsdChecker(desiredRate, firebase, fcmToken2)).start()
+  new Thread(new AviasalesChecker(LocalDate.of(2022, 12, 31), 20000, firebase, fcmToken2)).start()
 }
