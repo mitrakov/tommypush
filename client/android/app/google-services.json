@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "87019757262",
+    "project_id": "tommypush-405b7",
+    "storage_bucket": "tommypush-405b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87019757262:android:7d728f4bde8aadd25efa9f",
+        "android_client_info": {
+          "package_name": "com.mitrakov.self.tommypush"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87019757262-mc5pu68jgr98a8ol6n56v2bnrvtvn2gl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXTRRWMavLtMETC6HhpzSiDJA4NZ-rVM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87019757262-mc5pu68jgr98a8ol6n56v2bnrvtvn2gl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "87019757262-o8uns1d5gkqs5qj9jut9e5pt21k94a5n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mitrakov.self.tommypush"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

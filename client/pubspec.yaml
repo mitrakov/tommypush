@@ -2,7 +2,7 @@
 name: tommypush
 description: Simple Push Notifications receiver
 
-version: 1.0.0+2
+version: 1.0.0+4
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
