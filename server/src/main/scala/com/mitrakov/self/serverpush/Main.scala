@@ -1,6 +1,6 @@
 package com.mitrakov.self.serverpush
 
-// to build run: "sbt assembly"
+// build: "sbt assembly"
 object Main extends App {
   if (args.length != 3) {
     Console.err.println("Usage:   java -jar tommypush.jar <path/to/firebase.json> <usd-rate> <aviasales-rate>\nExample: java -jar tommypush.jar /home/user1/firebase-adminsdk.json 76.2 10000")
@@ -18,17 +18,13 @@ object Main extends App {
 
   val firebase = new FirebaseHelper(firebaseConfPath)
   val usdToRubPath   = "https://iss.moex.com/iss/engines/currency/markets/selt/securities.jsonp?iss.meta=off&iss.only=marketdata&securities=CETS:USD000UTSTOM"
-  val aviasalesPath0 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2022-12-31&depart_range=0"
-  val aviasalesPath1 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2023-01-01&depart_range=0"
-  val aviasalesPath2 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2023-01-02&depart_range=0"
-  val aviasalesPath3 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=LED&destination_iata=EVN&depart_start=2023-01-03&depart_range=0"
+  val aviasalesPath6 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=EVN&destination_iata=LED&depart_start=2023-01-06&depart_range=0"
+  val aviasalesPath7 = "https://lyssa.aviasales.ru/price_matrix?origin_iata=EVN&destination_iata=LED&depart_start=2023-01-07&depart_range=0"
 
   val checkers = List(
     new Checker("USD", usdToRubPath, "marketdata.data[0][8]", GreaterComparer, desiredUsdRate, firebase, fcmToken2),
-    new Checker("Aviasales 12-31", aviasalesPath0, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
-    new Checker("Aviasales 01-01", aviasalesPath1, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
-    new Checker("Aviasales 01-02", aviasalesPath2, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
-    new Checker("Aviasales 01-03", aviasalesPath3, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
+    new Checker("Aviasales-6", aviasalesPath6, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
+    new Checker("Aviasales-7", aviasalesPath7, "min(prices[].value)", LessComparer, desiredAviasalesRate, firebase, fcmToken2),
   )
 
   checkers.foreach(_.start())
