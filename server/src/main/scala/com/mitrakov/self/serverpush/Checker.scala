@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.typesafe.scalalogging.StrictLogging
 import io.burt.jmespath.jackson.JacksonRuntime
 import sttp.client3.{HttpClientSyncBackend, Identity, SttpApi, SttpBackend}
+import sttp.model.{MediaType, Method}
 import java.time.{Duration, LocalDateTime}
 import scala.util.Try
 
-class Checker(name: String, request: String, jmesPath: String, comparer: Comparer, desiredRate: Double, firebase: FirebaseHelper, recipientFcmToken: String)
+class Checker(name: String, method: Method, uri: String, jsonBody: Option[String], jmesPath: String, comparer: Comparer, desiredRate: Double, firebase: FirebaseHelper, recipientFcmToken: String)
   extends Thread with SttpApi with StrictLogging {
 
   val COOLDOWN_MINUTES = 180     // don't send duplicate messages during this time
@@ -30,12 +31,16 @@ class Checker(name: String, request: String, jmesPath: String, comparer: Compare
           case Left(error) => logger.error(error)
         }
       }
-      Thread.sleep(5000L)
+      Thread.sleep(10000L)
     }
   }
 
   def makeRequest(): Either[String, String] = {
-    val response = basicRequest.get(uri"$request").send(sttp)
+    val request = jsonBody match {
+      case None       => basicRequest.method(method, uri"$uri")
+      case Some(json) => basicRequest.method(method, uri"$uri").contentType(MediaType.ApplicationJson).body(json)
+    }
+    val response = request.send(sttp)
     val result = response.body
     logger.debug(result.toString)
     result
