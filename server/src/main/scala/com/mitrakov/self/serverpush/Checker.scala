@@ -8,10 +8,19 @@ import sttp.model.{MediaType, Method}
 import java.time.{Duration, LocalDateTime}
 import scala.util.Try
 
-class Checker(name: String, method: Method, uri: String, jsonBody: Option[String], jmesPath: String, comparer: Comparer, desiredRate: Double, firebase: FirebaseHelper, recipientFcmToken: String)
-  extends Thread with SttpApi with StrictLogging {
+class Checker(
+    name: String,
+    method: Method,
+    uri: String,
+    jsonBody: Option[String],
+    jmesPath: String,
+    comparer: Comparer,
+    desiredRate: Double,
+    firebase: FirebaseHelper,
+    recipientFcmTokens: List[String]
+) extends Thread with SttpApi with StrictLogging {
 
-  val COOLDOWN_MINUTES = 180     // don't send duplicate messages during this time
+  val COOLDOWN_MINUTES = 240     // don't send duplicate messages during this time
   val sttp: SttpBackend[Identity, Any] = HttpClientSyncBackend()
   val jqRuntime = new JacksonRuntime()
   val mapper = new ObjectMapper()
@@ -25,7 +34,9 @@ class Checker(name: String, method: Method, uri: String, jsonBody: Option[String
           case Right(json) =>
             val realRate = parseDouble(json, jmesPath)
             if (comparer.compare(realRate, desiredRate)) {
-              firebase.sendMessage(recipientFcmToken, s"Tommy $name Checker", s"$realRate $comparer $desiredRate!")
+              recipientFcmTokens.foreach { token =>
+                firebase.sendMessage(token, s"Эдуард Суровый: $name", s"$realRate $comparer $desiredRate!")
+              }
               lastSentMsgTime = LocalDateTime.now()
             }
           case Left(error) => logger.error(error)

@@ -17,14 +17,16 @@ object Main extends App {
   val fcmToken1 = "cVXnVdTcM00lnKcKq4zrBn:APA91bFBMJQ87ryzNipCIVwlXOpwNl-3RWjOTw1Ei3yAFL6q3wr7bkVzRmXMeFYhtFYhEKlfogztMKTTRK4sVBLkLpCGh0NOCicbwqUjF2hJ-shta-lspkZBuTU5MWS6R2-cdBbmYvM1"
   // Samsung Galaxy S7
   val fcmToken2 = "fKloxEYmR7CinffPjQgUn2:APA91bE0-dyq0RRj9k1SFol8kO6xX39QnhQh2sHzZNTxRpZ_0cLlxhymlwA9TEKuIKOOLjG2bjPHjEv7iOA7fgWtB1sn1JX8oCev6j3EMHpmKfUZXybECpCUtUmqTSzWrpP-Yz6Awn2j"
+  // Nelly
+  val fcmToken3 = "cOlSdL6IRHK1iPQK-gYq3-:APA91bFb3SQepLl0epysO219nmH9eNGHx2moNRqs5RnzIYP0eicCJNlmwSAR6U8A6Lvx7G6BzzRVQFKnA_RXXH-N5LWxWvFqvTzfAGAt88ed9B4XKeppEPenKoFsF322-HOsjlZMihpy"
 
   val firebase = new FirebaseHelper(firebaseConfPath)
   val usdToRubPath  = "https://iss.moex.com/iss/engines/currency/markets/selt/securities.jsonp?iss.meta=off&iss.only=marketdata&securities=CETS:USD000UTSTOM"
   val aviasalesPath = "https://ariadne.aviasales.ru/api/gql"    // GET: "https://lyssa.aviasales.ru/price_matrix?origin_iata=EVN&destination_iata=LED&depart_start=2023-01-06&depart_range=0"; jq="min(prices[].value)"
 
   val checkers = List(
-    new Checker("USD", Method.GET, usdToRubPath, None, "marketdata.data[0][8]", GreaterComparer, desiredUsdRate, firebase, fcmToken2),
-    new Checker("Aviasales-Feb23", Method.POST, aviasalesPath, aviasalesJson(), "data.best_prices_v2.cheapest_direct.value", LessComparer, desiredAviasalesRate, firebase, fcmToken2)
+    new Checker("USD", Method.GET, usdToRubPath, None, "marketdata.data[0][8]", GreaterComparer, desiredUsdRate, firebase, List(fcmToken2)),
+    new Checker("Aviasales-Feb23", Method.POST, aviasalesPath, aviasalesJson(), "data.best_prices_v2.cheapest_direct.value", LessComparer, desiredAviasalesRate, firebase, List(fcmToken2, fcmToken3))
   )
 
   checkers.foreach(_.start())
