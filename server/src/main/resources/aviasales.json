@@ -1,0 +1,34 @@
+{
+  "variables" : {
+    "bestPricesInput" : {
+      "origin" : "LED",
+      "destination" : "EVN",
+      "one_way" : true,
+      "dates" : {"depart_dates" : ["2023-02-23"]},
+      "market" : "ru",
+      "currency" : "rub"
+    },
+    "brand" : "AS",
+    "fetchPriceChart" : false,
+    "priceChartInput" : {
+      "origin_city_iata" : "LED",
+      "destination_city_iata" : "EVN",
+      "one_way" : true,
+      "dates" : {
+        "depart_date_from" : "2023-02-23",
+        "depart_date_to" : "2023-02-24",
+        "return_date_from" : "2023-02-23",
+        "return_date_to" : "2023-02-24"
+      },
+      "market" : "ru",
+      "currency" : "rub",
+      "filters" : {
+        "direct" : true,
+        "convenient" : false,
+        "with_baggage" : false
+      },
+      "trip_class" : "Y"
+    }
+  },
+  "query" : "\nquery GetMinPrices(\n  $bestPricesInput: BestPricesV2Input!\n  $priceChartInput: PriceChartV3Input!\n  $brand: Brand!\n  $fetchPriceChart: Boolean!\n  ) {\n  best_prices_v2(\n    input: $bestPricesInput\n    brand: $brand\n  ) {\n    cheapest {\n      ...priceFields        \n    }\n    cheapest_direct {\n      ...priceFields        \n    }\n    cheapest_convenient {\n      ...priceFields\n    }\n  }\n  price_chart_v3 (\n    input: $priceChartInput\n    brand: $brand\n  ) @include(if: $fetchPriceChart) {\n    prices {\n      price {\n        value\n        depart_date\n        return_date\n      }\n      stats {\n        depart_low\n        depart_value\n        return_low\n        return_value\n      }\n    }\n  }\n}\n\nfragment priceFields on Price {\n  depart_date\n  return_date\n  value\n  found_at\n  signature\n  convenient\n  segments {\n    transfers {\n      duration_seconds\n      visa_required\n      night_transfer\n      country_code\n      at\n      to \n    }\n  }\n}\n\n"
+}
