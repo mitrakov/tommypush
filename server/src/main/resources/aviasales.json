@@ -1,10 +1,10 @@
 {
   "variables" : {
     "bestPricesInput" : {
-      "origin" : "LED",
-      "destination" : "EVN",
+      "origin" : "EVN",
+      "destination" : "LED",
       "one_way" : true,
-      "dates" : {"depart_dates" : ["2023-02-23"]},
+      "dates" : {"depart_dates" : ["2023-02-26"]},
       "market" : "ru",
       "currency" : "rub"
     },
