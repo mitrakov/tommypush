@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         if (args.length != 3) {
             System.err.println("Usage:   java -jar tommypush.jar <path/to/firebase.json> <usd-rate> <aviasales-rate>\nExample: java -jar tommypush.jar /home/user1/firebase-adminsdk.json 76.2 10000");
             System.exit(1);
@@ -28,19 +28,16 @@ public class Main {
 
         final List<Checker> checkers = Arrays.asList(
             new Checker("USD", "GET", usdToRubPath, Optional.empty(), "marketdata.data[0][8]", new GreaterComparer(), desiredUsdRate, firebase, Collections.singletonList(fcmToken2)),
-            new Checker("Aviasales-Feb26", "POST", aviasalesPath, aviasalesJson(), "data.best_prices_v2.cheapest_direct.value", new LessComparer(), desiredAviasalesRate, firebase, Arrays.asList(fcmToken2, fcmToken3))
+            new Checker("Aviasales-Feb26", "POST", aviasalesPath, Optional.of(aviasalesJson()), "data.best_prices_v2.cheapest_direct.value", new LessComparer(), desiredAviasalesRate, firebase, Arrays.asList(fcmToken2, fcmToken3))
         );
 
         checkers.forEach(Thread::start);
     }
 
-    private static Optional<String> aviasalesJson() throws IOException {
+    private static String aviasalesJson() {
         try (final InputStream is = Main.class.getClassLoader().getResourceAsStream("aviasales.json")) {
-            return Optional.ofNullable(is).map(i -> {
-                try {
-                    return new String(i.readAllBytes());
-                } catch (IOException e) {e.printStackTrace(); return null;}
-            });
-        }
+            if (is == null) throw new RuntimeException("Cannot read json");
+            return new String(is.readAllBytes());
+        } catch (IOException e) {throw new RuntimeException(e);}
     }
 }
