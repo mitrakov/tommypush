@@ -56,41 +56,46 @@ public class Checker extends Thread {
 
     @Override
     public void run() {
-        while (true) try {
+        while (true) {
             final long minutes = Duration.between(lastSentMsgTime, LocalDateTime.now()).toMinutes();
             if (minutes >= COOLDOWN_MINUTES) {
                 final String result = makeRequest();
                 if (!result.isEmpty()) {
-                    final double realRate = parseDouble(result, jmesPath);
-                    if (comparer.compare(realRate, desiredRate)) {
-                        recipientFcmTokens.forEach( token -> {
-                            try {
-                                firebase.sendMessage(token, String.format("Эдуард Суровый: %s", name), String.format("%s %s %s!", realRate, comparer, desiredRate));
-                            } catch (Throwable e) {e.printStackTrace();}
-                        });
-                        lastSentMsgTime = LocalDateTime.now();
-                    }
-                } else System.err.println("No response body");
+                    parseDouble(result, jmesPath).ifPresent(realRate -> {
+                        if (comparer.compare(realRate, desiredRate)) {
+                            recipientFcmTokens.forEach( token -> {
+                                try {
+                                    firebase.sendMessage(token, String.format("Эдуард Суровый: %s", name), String.format("%s %s %s!", realRate, comparer, desiredRate));
+                                } catch (Throwable e) {e.printStackTrace();}
+                            });
+                            lastSentMsgTime = LocalDateTime.now();
+                        }
+                    });
+                } else System.err.println("Error getting response");
             }
-            Thread.sleep(10000L);
-        } catch (Throwable e) {e.printStackTrace();}
-    }
-
-    private String makeRequest() throws IOException {
-        final RequestBody body = jsonBody.map(s -> RequestBody.create(s, MediaType.parse(APPLICATION_JSON))).orElse(null);
-        final Call call = client.newCall(new Request.Builder().url(uri).method(method, body).build());
-        try (final Response response = call.execute()) {
-            return response.body() != null ? response.body().string() : "";
+            try {Thread.sleep(10000L);} catch (InterruptedException e) {e.printStackTrace();}
         }
     }
 
-    private double parseDouble(String json, String jmesPath) throws IOException {
-        final Expression<JsonNode> jq = jqRuntime.compile(jmesPath);
-        final JsonNode node = mapper.readTree(json);
-        final JsonNode result = jq.search(node);
-        System.out.printf("%s result is %s\n", name, result);
+    private String makeRequest() {
+        final RequestBody body = jsonBody.map(s -> RequestBody.create(s, MediaType.parse(APPLICATION_JSON))).orElse(null);
+        final Call call = client.newCall(new Request.Builder().url(uri).method(method, body).build());
+        try (final Response response = call.execute()) {
+            if (response.code() == 200)
+                return response.body() != null ? response.body().string() : "";
+            else { System.err.println(response.body()); return ""; }
+        } catch (IOException e) {e.printStackTrace(); return "";}
+    }
 
-        return result.asDouble();
+    private Optional<Double> parseDouble(String json, String jmesPath) {
+        try {
+            final Expression<JsonNode> jq = jqRuntime.compile(jmesPath);
+            final JsonNode node = mapper.readTree(json);
+            final JsonNode result = jq.search(node);
+            System.out.printf("%s: %s result is %s\n", LocalDateTime.now(), name, result);
+
+            return Optional.of(result.asDouble());
+        } catch (IOException e) {e.printStackTrace(); return Optional.empty();}
     }
 
     private OkHttpClient buildClient(boolean secure) {
@@ -113,8 +118,6 @@ public class Checker extends Thread {
                     .sslSocketFactory(sslContext.getSocketFactory(), manager)
                     .hostnameVerifier((h,s) -> true)
                     .build();
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {throw new RuntimeException(e);}
     }
 }
