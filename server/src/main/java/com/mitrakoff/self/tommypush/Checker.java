@@ -94,7 +94,7 @@ public class Checker extends Thread {
             final JsonNode result = jq.search(node);
             System.out.printf("%s: %s result is %s\n", LocalDateTime.now(), name, result);
 
-            return Optional.of(result.asDouble());
+            return Optional.ofNullable(result).map(JsonNode::asDouble);
         } catch (IOException e) {e.printStackTrace(); return Optional.empty();}
     }
 

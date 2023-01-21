@@ -28,7 +28,7 @@ public class Main {
 
         final List<Checker> checkers = Arrays.asList(
             new Checker("USD", "GET", usdToRubPath, Optional.empty(), "marketdata.data[0][8]", new GreaterComparer(), desiredUsdRate, firebase, Collections.singletonList(fcmToken2)),
-            new Checker("Aviasales-Feb26", "POST", aviasalesPath, Optional.of(aviasalesJson()), "data.best_prices_v2.cheapest_direct.value", new LessComparer(), desiredAviasalesRate, firebase, Arrays.asList(fcmToken2, fcmToken3))
+            new Checker("Aviasales-Feb26", "POST", aviasalesPath, Optional.of(aviasalesJson()), "data.best_prices_v2.cheapest_direct.value", new LessComparer(), desiredAviasalesRate, firebase, Arrays.asList(fcmToken2))
         );
 
         checkers.forEach(Thread::start);
