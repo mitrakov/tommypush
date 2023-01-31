@@ -94,7 +94,8 @@ public class Checker extends Thread {
             final JsonNode result = jq.search(node);
             System.out.printf("%s: %s result is %s\n", LocalDateTime.now(), name, result);
 
-            return Optional.ofNullable(result).map(JsonNode::asDouble);
+            // Note that "Optional.ofNullable(result)" won't work because "result==null" may be false, but "result.isNull()" may be true
+            return result.isNull() ? Optional.empty() : Optional.of(result.asDouble());
         } catch (IOException e) {e.printStackTrace(); return Optional.empty();}
     }
 
