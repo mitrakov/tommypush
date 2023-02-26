@@ -4,7 +4,7 @@
       "origin" : "EVN",
       "destination" : "LED",
       "one_way" : true,
-      "dates" : {"depart_dates" : ["2023-02-26"]},
+      "dates" : {"depart_dates" : ["2023-03-30"]},
       "market" : "ru",
       "currency" : "rub"
     },
