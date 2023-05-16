@@ -18,9 +18,11 @@ public class Main {
         // iPhone7
         final String fcmToken1 = "cVXnVdTcM00lnKcKq4zrBn:APA91bFBMJQ87ryzNipCIVwlXOpwNl-3RWjOTw1Ei3yAFL6q3wr7bkVzRmXMeFYhtFYhEKlfogztMKTTRK4sVBLkLpCGh0NOCicbwqUjF2hJ-shta-lspkZBuTU5MWS6R2-cdBbmYvM1";
         // Samsung Galaxy S7
-        final String fcmToken2 = "fKloxEYmR7CinffPjQgUn2:APA91bE0-dyq0RRj9k1SFol8kO6xX39QnhQh2sHzZNTxRpZ_0cLlxhymlwA9TEKuIKOOLjG2bjPHjEv7iOA7fgWtB1sn1JX8oCev6j3EMHpmKfUZXybECpCUtUmqTSzWrpP-Yz6Awn2j";
+        final String fcmToken2 = "d2-l9NbZSJ6s9jBkLXo_Ya:APA91bGat-LFN7OAMjTwgAKu8wm7_wzK7DmUU0__PnuDzIqgEP5909HUqHjItZNabVTyrYFtzkZKK1fMgd2KXnJIGGXkrTc9Ofeyhm3smQouCcPglq3u9TzRpw_wieA52Gv1MgTODLaJ";
         // Nelly
         final String fcmToken3 = "cOlSdL6IRHK1iPQK-gYq3-:APA91bFb3SQepLl0epysO219nmH9eNGHx2moNRqs5RnzIYP0eicCJNlmwSAR6U8A6Lvx7G6BzzRVQFKnA_RXXH-N5LWxWvFqvTzfAGAt88ed9B4XKeppEPenKoFsF322-HOsjlZMihpy";
+        // iPhone X
+        final String fcmToken4 = "e5BOi9E7Gk9JhyKDCP2bNy:APA91bHLj9FoQRZKfHH0UGMA8ChP1TuZ7R1abYpkTv65arx__oUsBZfFyKRA3yQ7VrEJCFDOGLb5NKvuICAAiNEXePzvRm-Ig1FkIxFjAuvZckPmiixlruZxo8p5KnQ9XLe2O2ZttlGQ";
 
         final FirebaseHelper firebase = new FirebaseHelper(firebaseConfPath);
         final String usdToRubPath  = "https://iss.moex.com/iss/engines/currency/markets/selt/securities.jsonp?iss.meta=off&iss.only=marketdata&securities=CETS:USD000UTSTOM";
