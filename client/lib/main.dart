@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+// to set up Firebase: see http://mitrakoff.com/en/flutter/firebase/get-started
 // note: in `ios/Runner/GoogleService-Info.plist` there is a Firebase API-Key exposed which is NOT a security risk (https://stackoverflow.com/questions/38092301, https://groups.google.com/g/firebase-talk/c/4A23wPAbRjw)
 void main() async {
   Future<String?> initMessaging() async {
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         title: 'Push Notifications App',
         debugShowCheckedModeBanner: false,
         home: Scaffold (
-          appBar: AppBar(title: const Text("Push Notifications application")),
+          appBar: AppBar(title: const Text("Tommy Push Notifications App")),
           body: Center(child: Text("Your FCM token is $token")),
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.copy),
