@@ -15,7 +15,8 @@ import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "SameParameterValue", "InfiniteLoopStatement", "BusyWait"})
 public class Checker extends Thread {
-    static public int COOLDOWN_MINUTES = 240;     // don't send duplicate messages during this time
+    static public long PERIODIC_MSEC = 20000L;
+    static public int COOLDOWN_MINUTES = 300;     // don't send duplicate messages during this time
     static public final String APPLICATION_JSON = "application/json";
 
     private final String name;
@@ -73,7 +74,7 @@ public class Checker extends Thread {
                     });
                 } else System.err.println("Error getting response");
             }
-            try {Thread.sleep(10000L);} catch (InterruptedException e) {e.printStackTrace();}
+            try {Thread.sleep(PERIODIC_MSEC);} catch (InterruptedException e) {e.printStackTrace();}
         }
     }
 
