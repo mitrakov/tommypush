@@ -58,9 +58,9 @@ public class Checker extends Thread {
     @Override
     public void run() {
         while (true) {
-            final long minutes = Duration.between(lastSentMsgTime, LocalDateTime.now()).toMinutes();
+            final var minutes = Duration.between(lastSentMsgTime, LocalDateTime.now()).toMinutes();
             if (minutes >= COOLDOWN_MINUTES) {
-                final String result = makeRequest();
+                final var result = makeRequest();
                 if (!result.isEmpty()) {
                     parseDouble(result, jmesPath).ifPresent(realRate -> {
                         if (comparer.compare(realRate, desiredRate)) {
@@ -79,9 +79,9 @@ public class Checker extends Thread {
     }
 
     private String makeRequest() {
-        final RequestBody body = jsonBody.map(s -> RequestBody.create(s, MediaType.parse(APPLICATION_JSON))).orElse(null);
-        final Call call = client.newCall(new Request.Builder().url(uri).method(method, body).build());
-        try (final Response response = call.execute()) {
+        final var body = jsonBody.map(s -> RequestBody.create(s, MediaType.parse(APPLICATION_JSON))).orElse(null);
+        final var call = client.newCall(new Request.Builder().url(uri).method(method, body).build());
+        try (final var response = call.execute()) {
             if (response.code() == 200)
                 return response.body() != null ? response.body().string() : "";
             else { System.err.println(response.body()); return ""; }
@@ -90,9 +90,9 @@ public class Checker extends Thread {
 
     private Optional<Double> parseDouble(String json, String jmesPath) {
         try {
-            final Expression<JsonNode> jq = jqRuntime.compile(jmesPath);
-            final JsonNode node = mapper.readTree(json);
-            final JsonNode result = jq.search(node);
+            final var jq = jqRuntime.compile(jmesPath);
+            final var node = mapper.readTree(json);
+            final var result = jq.search(node);
             System.out.printf("%s: %s result is %s\n", LocalDateTime.now(), name, result);
 
             // Note that "Optional.ofNullable(result)" won't work because "result==null" may be false, but "result.isNull()" may be true
@@ -104,7 +104,7 @@ public class Checker extends Thread {
         if (secure) return new OkHttpClient();
 
         // insecure http client
-        final X509TrustManager manager = new X509TrustManager() {
+        final var manager = new X509TrustManager() {
             @Override
             public void checkClientTrusted(X509Certificate[] chain, String authType) {}
             @Override
@@ -114,7 +114,7 @@ public class Checker extends Thread {
         };
 
         try {
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            final var sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, new TrustManager[]{manager}, new SecureRandom());
             return new OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.getSocketFactory(), manager)
