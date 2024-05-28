@@ -1,9 +1,7 @@
 package com.mitrakoff.self.tommypush;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mitrakoff.self.tommypush.comparer.Comparer;
-import io.burt.jmespath.Expression;
 import io.burt.jmespath.jackson.JacksonRuntime;
 import okhttp3.*;
 import javax.net.ssl.*;
@@ -14,6 +12,7 @@ import java.time.*;
 import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "SameParameterValue", "InfiniteLoopStatement", "BusyWait"})
+@Deprecated
 public class Checker extends Thread {
     static public long PERIODIC_MSEC = 20000L;
     static public int COOLDOWN_MINUTES = 300;     // don't send duplicate messages during this time
