@@ -4,30 +4,30 @@
       "class": "com.mitrakoff.self.tommypush.AviasalesChecker",
       "method": "POST",
       "uri": "https://ariadne.aviasales.ru/api/gql",
-      "formatMessage": "Found new route for %s₽ (%s – %s)",
+      "formatMessage": "Found new MLE route for %s₽ (%s – %s)",
       "body": {
-         "operation_name" : "price_chart",
-         "query" : "query GetPriceChartV3($brand: Brand!,$input: PriceChartV3Input!,) {price_chart_v3(input: $input\nbrand: $brand) {prices {price {value\ndepart_date\nreturn_date}\nstats {\ndepart_low\ndepart_value\nreturn_low\nreturn_value}}}}",
-         "variables" : {
-            "brand" : "AS",
-            "input" : {
-               "origin_city_iata" : "LED",
-               "destination_city_iata" : "MLE",
-               "one_way" : false,
-               "dates" : {
-                  "depart_date_from" : "2024-05-28",
-                  "depart_date_to"   : "2024-08-26",
-                  "return_date_from" : "2024-05-28",
-                  "return_date_to"   : "2024-08-26"
+         "operation_name": "price_chart",
+         "query": "query GetPriceChartV3($brand: Brand!,$input: PriceChartV3Input!,) {price_chart_v3(input: $input\nbrand: $brand) {prices {price {value\ndepart_date\nreturn_date}\nstats {\ndepart_low\ndepart_value\nreturn_low\nreturn_value}}}}",
+         "variables": {
+            "brand": "AS",
+            "input": {
+               "origin_city_iata": "LED",
+               "destination_city_iata": "MLE",
+               "one_way": false,
+               "dates": {
+                  "depart_date_from": "2024-06-01",
+                  "depart_date_to"  : "2024-08-20",
+                  "return_date_from": "2024-06-10",
+                  "return_date_to"  : "2024-08-31"
                },
                "filters" : {
-                  "convenient" : false,
-                  "direct" : false,
-                  "with_baggage" : false
+                  "convenient": false,
+                  "direct": false,
+                  "with_baggage": false
                },
-               "market" : "ru",
-               "currency" : "rub",
-               "trip_class" : "Y"
+               "market": "ru",
+               "currency": "rub",
+               "trip_class": "Y"
             }
          }
       }
