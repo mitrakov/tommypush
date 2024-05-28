@@ -1,8 +1,8 @@
-# build with Flutter 3.7.12
+# build with Flutter 3.19.4, CocoaPods 1.15.2
 name: tommypush
 description: Simple Push Notifications receiver
 
-version: 23.5.16+6
+version: 24.5.28+7
 
 environment:
   sdk: ">=2.19.6 <3.0.0"
@@ -10,12 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fluttertoast: 8.2.1         # toast messages
-  firebase_core: 2.13.0       # push notifications
-  firebase_messaging: 14.6.1  # push notifications
+  firebase_core: 2.32.0       # push notifications
+  firebase_messaging: 14.9.4  # push notifications
 
 dev_dependencies:
-  flutter_lints: 2.0.0
+  flutter_lints: 4.0.0
 
 flutter:
   uses-material-design: true

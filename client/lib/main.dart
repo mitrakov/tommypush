@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 // to set up Firebase: see http://mitrakoff.com/en/flutter/firebase/get-started
 // note: in `ios/Runner/GoogleService-Info.plist` there is a Firebase API-Key exposed which is NOT a security risk (https://stackoverflow.com/questions/38092301, https://groups.google.com/g/firebase-talk/c/4A23wPAbRjw)
@@ -29,7 +28,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized(); // make this call if you have initialization code before "runApp()"
   final token = await initMessaging();
-  runApp(MyApp(token ?? ""));
+  runApp(MaterialApp(title: "Tommypush", home: MyApp(token ?? "")));
 }
 
 class MyApp extends StatelessWidget {
@@ -38,20 +37,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Push Notifications App',
-        debugShowCheckedModeBanner: false,
-        home: Scaffold (
-          appBar: AppBar(title: const Text("Tommy Push Notifications App")),
-          body: Center(child: Text("Your FCM token is $token")),
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.copy),
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: token));
-              Fluttertoast.showToast(msg: "Copied!");
-            }
-          ),
-        )
+    return Scaffold (
+      appBar: AppBar(title: const Text("Tommy Push Notifications App")),
+      body: Center(child: Text("Your FCM token is $token")),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.copy),
+        onPressed: () async {
+          await Clipboard.setData(ClipboardData(text: token));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied!"), duration: Duration(seconds: 2)));
+        }
+      ),
     );
   }
 }
