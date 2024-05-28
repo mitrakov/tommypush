@@ -1,0 +1,39 @@
+{
+  "checkers": [
+    {
+      "class": "com.mitrakoff.self.tommypush.AviasalesChecker",
+      "method": "POST",
+      "uri": "https://ariadne.aviasales.ru/api/gql",
+      "formatMessage": "Found new route for %s₽ (%s – %s)",
+      "body": {
+         "operation_name" : "price_chart",
+         "query" : "query GetPriceChartV3($brand: Brand!,$input: PriceChartV3Input!,) {price_chart_v3(input: $input\nbrand: $brand) {prices {price {value\ndepart_date\nreturn_date}\nstats {\ndepart_low\ndepart_value\nreturn_low\nreturn_value}}}}",
+         "variables" : {
+            "brand" : "AS",
+            "input" : {
+               "origin_city_iata" : "LED",
+               "destination_city_iata" : "MLE",
+               "one_way" : false,
+               "dates" : {
+                  "depart_date_from" : "2024-05-28",
+                  "depart_date_to"   : "2024-08-26",
+                  "return_date_from" : "2024-05-28",
+                  "return_date_to"   : "2024-08-26"
+               },
+               "filters" : {
+                  "convenient" : false,
+                  "direct" : false,
+                  "with_baggage" : false
+               },
+               "market" : "ru",
+               "currency" : "rub",
+               "trip_class" : "Y"
+            }
+         }
+      }
+    }
+  ],
+  "fcmTokens": [
+    "fHWRTKGHjUnvqSlrBdeqQO:APA91bG0tH-fcy44_OBirgoIt04s4s58k-9gEJPFg9vglCoux9nRdgH7SYMmxUD6HWrTgakeFZK3J6OeZIf2Qs8aaxDUpGRlh9zwBVwWU9Lkg9U5c3MzCYzkrAKf2vRSzr3ClqGPWLbU"
+  ]
+}
