@@ -44,7 +44,7 @@ public class Main {
                     if (checkerClass == null || method == null || uri == null || formatMessage == null || jsonBody == null)
                         throw new IllegalAccessException("Specify 'class', 'method', 'uri', 'formatMessage' and 'body' for each checker");
 
-                    final Checker2 checker = (Checker2) Class.forName(checkerClass.textValue()).getDeclaredConstructor(String.class).newInstance(formatMessage.asText());
+                    final Checker checker = (Checker) Class.forName(checkerClass.textValue()).getDeclaredConstructor(String.class).newInstance(formatMessage.asText());
 
                     try { // TODO: only POST implemented, add other http methods
                         final var body = RequestBody.create(jsonBody.toString(), MediaType.parse("application/json"));

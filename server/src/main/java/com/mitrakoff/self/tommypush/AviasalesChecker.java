@@ -5,7 +5,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
 
-public class AviasalesChecker implements Checker2 {
+public class AviasalesChecker implements Checker {
     final protected String formatMessage;
 
     public AviasalesChecker(String formatMessage) {
