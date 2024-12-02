@@ -6,10 +6,11 @@ import okhttp3.*;
 import java.io.File;
 import java.time.LocalDateTime;
 
-// build: docker build -t mitrakov/tommypush:24.12.2 .
-// run:   docker run --rm -d --name tommypush -v $HOME/abc:/etc/tommypush mitrakov/tommypush:24.12.2
-// note:  "abc" must contain "firebase.json" (secret file from Google Firebase), "application.json" (see example in root
-//        folder), and [optionally] "debug.json" to run a container in DEBUG mode
+// compile: mvn clean package
+// build:   docker build -t mitrakov/tommypush:24.12.2 .
+// run:     docker run --rm -d --name tommypush -v $HOME/abc:/etc/tommypush mitrakov/tommypush:24.12.2
+// note:    "abc" must contain "firebase.json" (secret file from Google Firebase), "application.json" (see example in root
+//          folder), and [optionally] "debug.json" to run a container in DEBUG mode
 public class Main {
     public static String firebaseConfPath = "/etc/tommypush/firebase.json";
     public static String appConfPath      = "/etc/tommypush/application.json";
