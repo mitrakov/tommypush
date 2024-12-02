@@ -6,16 +6,21 @@ import okhttp3.*;
 import java.io.File;
 import java.time.LocalDateTime;
 
+// build: docker build -t mitrakov/tommypush:24.12.2 .
+// run:   docker run --rm -d --name tommypush -v $HOME/abc:/etc/tommypush mitrakov/tommypush:24.12.2
+// note:  "abc" must contain "firebase.json" (secret file from Google Firebase), "application.json" (see example in root
+//        folder), and [optionally] "debug.json" to run a container in DEBUG mode
 public class Main {
+    public static String firebaseConfPath = "/etc/tommypush/firebase.json";
+    public static String appConfPath      = "/etc/tommypush/application.json";
+    public static String debugConfPath    = "/etc/tommypush/debug.json";
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            System.err.println("Usage:   java -jar tommypush.jar firebase.json app.json\nExample: java -jar tommypush.jar /home/user1/firebase-adminsdk.json /home/user1/application.json");
+        if (!(new File(firebaseConfPath)).exists() || !(new File(appConfPath)).exists()) {
+            System.err.println("Cannot find \"firebase.json\" or \"application.json\"");
             System.exit(1);
         }
 
-        final var firebaseConfPath = args[0];
-        final var appConfPath = args[1];
-        final var isDebug = args.length == 3;
+        final var isDebug = (new File(debugConfPath)).exists();
         final var mapper = new ObjectMapper();
         final var client = new OkHttpClient();
         final var firebase = new FirebaseHelper(firebaseConfPath);
