@@ -4,7 +4,7 @@
       "class": "com.mitrakoff.self.tommypush.AviasalesChecker",
       "method": "POST",
       "uri": "https://ariadne.aviasales.ru/api/gql",
-      "formatMessage": "Found new MLE route for %s₽ (%s – %s)",
+      "formatMessage": "Found new MLE schedule for %s₽ (%s – %s)",
       "body": {
          "operation_name": "price_chart",
          "query": "query GetPriceChartV3($brand: Brand!,$input: PriceChartV3Input!,) {price_chart_v3(input: $input\nbrand: $brand) {prices {price {value\ndepart_date\nreturn_date}\nstats {\ndepart_low\ndepart_value\nreturn_low\nreturn_value}}}}",
@@ -15,10 +15,10 @@
                "destination_city_iata": "MLE",
                "one_way": false,
                "dates": {
-                  "depart_date_from": "2024-06-01",
-                  "depart_date_to"  : "2024-08-20",
-                  "return_date_from": "2024-06-10",
-                  "return_date_to"  : "2024-08-31"
+                  "depart_date_from": "2025-01-01",
+                  "depart_date_to"  : "2025-01-10",
+                  "return_date_from": "2025-01-11",
+                  "return_date_to"  : "2025-01-20"
                },
                "filters" : {
                   "convenient": false,
@@ -30,6 +30,35 @@
                "trip_class": "Y"
             }
          }
+      }
+    },
+    {
+      "class": "com.mitrakoff.self.tommypush.AviasalesSimple",
+      "method": "POST",
+      "uri": "https://ariadne.aviasales.ru/api/gql",
+      "formatMessage": "Found new PEE ticket for %s₽ (%s – %s)",
+      "body": {
+        "operation_name" : "best_prices_v2",
+        "query" : "\nquery GetBestPricesV2(\n $input: BestPricesV2Input!\n $brand: Brand!\n\n) {\n best_prices_v2(\n input: $input\n brand: $brand\n) {\n cheapest_direct {\n ...priceFields \n }\n\n }\n}\n\nfragment priceFields on Price {\n depart_date\n return_date\n value\n found_at\n currency\n with_baggage\n}",
+        "variables" : {
+          "input" : {
+            "origin" : "LED",
+            "destination" : "PEE",
+            "one_way" : false,
+            "dates" : {
+              "depart_dates" : ["2024-12-15"],
+              "return_dates" : ["2024-12-19"]
+            },
+            "filters" : {
+              "direct" : true,
+              "no_visa_at_transfer" : false,
+              "with_baggage" : false
+            },
+            "market" : "ru",
+            "currency" : "rub"
+          },
+          "brand" : "AS"
+        }
       }
     }
   ],
