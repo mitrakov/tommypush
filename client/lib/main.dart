@@ -50,3 +50,125 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+
+// This handler runs when the app is in the background or terminated.
+// It is crucial to initialize Firebase inside this handler.
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.messageId}");
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Set the background message handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  RemoteMessage? _initialMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInitialMessage();
+  }
+
+  // Function to check for an initial message
+  Future<void> _checkInitialMessage() async {
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      setState(() {
+        _initialMessage = initialMessage;
+      });
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle messages when the app is in the background and opened via notification
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    // Implement your logic to handle the message payload
+    // For example, navigate to a specific screen based on data in the message
+    if (message.data['type'] == 'chat') {
+      Navigator.pushNamed(context, '/chat', arguments: message.data);
+    } else if (message.data['type'] == 'product') {
+      Navigator.pushNamed(context, '/product_detail', arguments: message.data['productId']);
+    }
+    // ... other handling
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Firebase Messaging Demo',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Firebase Messaging'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Initial Message:'),
+              if (_initialMessage != null)
+                Column(
+                  children: [
+                    Text('Title: ${_initialMessage!.notification?.title ?? 'N/A'}'),
+                    Text('Body: ${_initialMessage!.notification?.body ?? 'N/A'}'),
+                    Text('Data: ${_initialMessage!.data}'),
+                  ],
+                )
+              else
+                Text('No initial message.'),
+            ],
+          ),
+        ),
+      ),
+      routes: {
+        '/chat': (context) => ChatScreen(),
+        '/product_detail': (context) => ProductDetailScreen(),
+      },
+    );
+  }
+}
+
+// Example screens for navigation
+class ChatScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final Map<String, dynamic>? args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    return Scaffold(
+      appBar: AppBar(title: Text('Chat Screen')),
+      body: Center(child: Text('Chat with: ${args?['senderId'] ?? 'Unknown'}')),
+    );
+  }
+}
+
+class ProductDetailScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final String? productId = ModalRoute.of(context)?.settings.arguments as String?;
+    return Scaffold(
+      appBar: AppBar(title: Text('Product Detail')),
+      body: Center(child: Text('Product ID: ${productId ?? 'Unknown'}')),
+    );
+  }
+}
+*/
