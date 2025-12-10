@@ -1,8 +1,8 @@
-# build with Flutter 3.19.4 (Intel x64), CocoaPods 1.16.2
+# build with Flutter 3.19.4 (Apple M1), CocoaPods 1.16.2
 name: tommypush
 description: Simple Push Notifications receiver
 
-version: 24.5.28+7
+version: 1.1.0+8
 
 environment:
   sdk: ">=2.19.6 <3.0.0"
