@@ -1,4 +1,3 @@
-// ignore_for_file: use_key_in_widget_constructors, curly_braces_in_flow_control_structures
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(); // it is crucial to initialize Firebase inside this handler
 }
 
+/*
+  DO NOT change the package name "com.mitrakov.self.tommypush" because it's used in Firebase Console!
+  https://console.firebase.google.com/project/tommypush-405b7
+ */
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();                                    // allow async calls in "main"
   await Firebase.initializeApp();                                               // init Firebase plugin
