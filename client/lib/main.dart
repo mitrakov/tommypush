@@ -3,6 +3,37 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/*
+Extra setup: create a Google Firebase project, generate *.plist for iOS and *.json for Android.
+1. iOS: add GoogleService-Info.plist to "ios/Runner"
+2. Android: add google-services.json to "android/app"
+
+// android/build.gradle.kts:
+plugins {
+    id("com.google.gms.google-services") version "4.4.4" apply false
+}
+// android/app/build.gradle.kts:
+plugins {
+    ...
+    id("com.google.gms.google-services")
+}
+*/
+
+/*
+Build for iOS:
+  bump version in pubspec.yaml
+  flutter build ios
+  xCode: Product -> Destination -> Any iOS Device (arm64)
+  xCode: Product -> Archive -> Distribute App -> Release Testing
+  rename and move *.ipa file to dist/
+
+Build for Android:
+  bump version in pubspec.yaml
+  flutter build apk
+  AndroidStudio: Build -> Generate Signed App Bundle or APK -> APK -> choose android/keystore.jks -> release
+  rename and move *.apk file to dist/
+*/
+
 // this handler runs when the app is in the background or terminated; must be on-top level with "@pragma" statement
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -58,7 +89,7 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Tommypush App")),
+      appBar: AppBar(title: const Text("Tommypush App"), centerTitle: true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +113,7 @@ class MyAppState extends State<MyApp> {
           await Clipboard.setData(ClipboardData(text: _fcmToken ?? ""));
           const msg = "FCM token copied!";
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(msg), duration: Duration(seconds: 2)));
-        }
+        },
       ),
     );
   }

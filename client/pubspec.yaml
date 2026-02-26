@@ -1,4 +1,4 @@
-# built with Flutter 3.38.5 (Mac Apple M1), Dart 3.10.4, CocoaPods 1.16.2, Xcode 26.2
+# built with Flutter 3.38.5 (Mac Apple M1), Dart 3.10.4, CocoaPods 1.16.2, Xcode 26.2, Android Studio 2025.2.3
 name: tommypush
 description: Simple Push Notifications receiver
 version: 1.2.0+11
@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   firebase_core: 4.3.0        # push notifications (both needed!)
   firebase_messaging: 16.1.0  # push notifications (both needed!)
+                              # android plugin: android/build.gradle.kts
 
 dev_dependencies:
   flutter_launcher_icons: 0.14.4     # icons generator, run: "dart run flutter_launcher_icons"
@@ -18,7 +19,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-flutter_launcher_icons:
+flutter_launcher_icons:       # dart run flutter_launcher_icons
+  android: "ic_launcher"
   ios: true
   image_path: "appicon.png"
   macos:
